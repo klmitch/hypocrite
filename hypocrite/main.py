@@ -20,8 +20,7 @@ from hypocrite import hypofile
 
 
 @cli_tools.argument(
-    'input',
-    dest='infile',
+    'infile',
     help='The input test file.'
 )
 @cli_tools.argument(

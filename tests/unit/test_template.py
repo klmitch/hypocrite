@@ -704,7 +704,7 @@ def _fake_elem_render(ctxt):
 
 class TestTemplate(object):
     def test_get_tmpl_cached(self, mocker):
-        mocker.patch.dict(template.Template._tmpl_cache)
+        mocker.patch.dict(template.Template._tmpl_cache, clear=True)
         mock_resource_stream = mocker.patch.object(
             template.pkg_resources, 'resource_stream'
         )
@@ -726,7 +726,7 @@ class TestTemplate(object):
         assert template.Template._tmpl_cache == {'spam.c': 'cached'}
 
     def test_get_tmpl_uncached(self, mocker):
-        mocker.patch.dict(template.Template._tmpl_cache)
+        mocker.patch.dict(template.Template._tmpl_cache, clear=True)
         mock_resource_stream = mocker.patch.object(
             template.pkg_resources, 'resource_stream'
         )

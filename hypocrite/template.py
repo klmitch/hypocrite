@@ -624,17 +624,7 @@ class Template(object):
 
         # First, realize all the defines
         for name, define in self.defines.items():
-            result = define.render(kwargs)
-
-            # Split multi-line defines
-            if '\n' in result:
-                result = result.split('\n')
-                if not result[-1]:
-                    # Eliminate the trailing blank line
-                    result.pop()
-
-            # Add the result back to the keyword arguments
-            kwargs[name] = result
+            kwargs[name] = define.render(kwargs)
 
         # Next, render all the sections
         for name, section in self.sections.items():

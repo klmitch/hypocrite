@@ -771,10 +771,7 @@ class TestTemplate(object):
             'render.return_value': 'one line value',
         })
         defines['def2'] = mocker.Mock(**{
-            'render.return_value': 'two line\nvalue',
-        })
-        defines['def3'] = mocker.Mock(**{
-            'render.return_value': 'two line\ntrailing newline\n',
+            'render.return_value': ['two line', 'value'],
         })
         sections = collections.OrderedDict()
         sections['sect1'] = mocker.Mock(**{
@@ -817,7 +814,6 @@ class TestTemplate(object):
             'c=3',
             'def1=one line value',
             "def2=['two line', 'value']",
-            "def3=['two line', 'trailing newline']",
             'line 4',
             'line 5',
             'line 6',

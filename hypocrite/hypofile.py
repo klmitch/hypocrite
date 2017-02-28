@@ -791,7 +791,7 @@ class HypoFile(object):
 
         # Parse the input file
         with open(path, 'rU') as stream:
-            values = parser.parse(stream, path)
+            values = parser.parse(stream, os.path.basename(path))
 
         return cls(path, **values)
 

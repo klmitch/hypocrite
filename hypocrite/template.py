@@ -140,7 +140,16 @@ class Define(object):
         :rtype: ``str``
         """
 
-        return self.template.render(kwargs)
+        # Render the text
+        text = self.template.render(kwargs)
+
+        # Is it multiline?
+        if '\n' in text:
+            text = text.split('\n')
+            if not text[-1]:
+                text.pop()
+
+        return text
 
 
 class Section(object):
@@ -198,10 +207,16 @@ class Section(object):
 
         for coord, text in self.contents.iter_coord():
             if text.startswith('#replace'):
-                # Multi-line replacement
+                # Look up the variable
                 var = text.split()[1]
-                for line in kwargs[var]:
-                    result.append(line)
+                replacement = kwargs[var]
+
+                # Ensure it's a list
+                if not isinstance(replacement, (list, linelist.LineList)):
+                    replacement = [replacement]
+
+                # Substitute it
+                result += replacement
             else:
                 # Make any necessary substitutions
                 line = SUBST_RE.sub(lambda x: kwargs[x.group(1)], text)

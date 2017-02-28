@@ -1401,7 +1401,7 @@ class TestHypoFile(object):
         assert isinstance(result, hypofile.HypoFile)
         mock_HypoParser.assert_called_once_with()
         mock_open.assert_called_once_with('some/path', 'rU')
-        parser.parse.assert_called_once_with(handle, 'some/path')
+        parser.parse.assert_called_once_with(handle, 'path')
         mock_init.assert_called_once_with('some/path', a=1, b=2, c=3)
 
     def test_init(self):

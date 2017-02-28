@@ -51,14 +51,37 @@ class TestDefine(object):
         assert result.template == mock_Template.return_value
         mock_Template.assert_called_once_with('line1\nline2\nline3')
 
-    def test_render(self, mocker):
+    def test_render_one_line(self, mocker):
         mock_Template = mocker.patch.object(template.jinja2, 'Template')
         tmpl = mock_Template.return_value
+        tmpl.render.return_value = 'one line'
         obj = template.Define('range', 'name', ['line1', 'line2', 'line3'])
 
         result = obj.render({'a': 1, 'b': 2, 'c': 3})
 
-        assert result == tmpl.render.return_value
+        assert result == 'one line'
+        tmpl.render.assert_called_once_with({'a': 1, 'b': 2, 'c': 3})
+
+    def test_render_multi_line(self, mocker):
+        mock_Template = mocker.patch.object(template.jinja2, 'Template')
+        tmpl = mock_Template.return_value
+        tmpl.render.return_value = 'one line\ntwo line'
+        obj = template.Define('range', 'name', ['line1', 'line2', 'line3'])
+
+        result = obj.render({'a': 1, 'b': 2, 'c': 3})
+
+        assert result == ['one line', 'two line']
+        tmpl.render.assert_called_once_with({'a': 1, 'b': 2, 'c': 3})
+
+    def test_render_multi_line_no_empty(self, mocker):
+        mock_Template = mocker.patch.object(template.jinja2, 'Template')
+        tmpl = mock_Template.return_value
+        tmpl.render.return_value = 'one line\ntwo line\n'
+        obj = template.Define('range', 'name', ['line1', 'line2', 'line3'])
+
+        result = obj.render({'a': 1, 'b': 2, 'c': 3})
+
+        assert result == ['one line', 'two line']
         tmpl.render.assert_called_once_with({'a': 1, 'b': 2, 'c': 3})
 
 
@@ -83,6 +106,8 @@ class TestSection(object):
             'line1',
             'line2',
             '#replace foo',
+            '#replace spam',
+            '#replace llist',
             'line {{bar}} {{baz}} 4',
         ], 5)
         obj = template.Section('range', 'name', set(), contents)
@@ -90,6 +115,12 @@ class TestSection(object):
             'foo': ['sub line1', 'sub line2'],
             'bar': 'baz',
             'baz': 'spam',
+            'spam': 'one line',
+            'llist': linelist.LineList([
+                'l1',
+                'l2',
+                'l3',
+            ], 1),
         }
 
         result = obj.render(kwargs)
@@ -99,7 +130,11 @@ class TestSection(object):
             (6, 'line2'),
             (None, 'sub line1'),
             (None, 'sub line2'),
-            (8, 'line baz spam 4'),
+            (None, 'one line'),
+            (1, 'l1'),
+            (2, 'l2'),
+            (3, 'l3'),
+            (10, 'line baz spam 4'),
         ]
 
 

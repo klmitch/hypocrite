@@ -135,7 +135,7 @@ class HypocriteTest(object):
     test file.
     """
 
-    TEMPLATE = 'test.c'
+    TEMPLATE = 'test.c.tmpl'
 
     def __init__(self, coord_range, name, code, fixtures):
         """
@@ -184,8 +184,8 @@ class HypocriteMock(object):
     to be mocked out.
     """
 
-    TEMPLATE_VOID = 'mock-void.c'
-    TEMPLATE = 'mock.c'
+    TEMPLATE_VOID = 'mock-void.c.tmpl'
+    TEMPLATE = 'mock.c.tmpl'
 
     def __init__(self, coord_range, name, return_type, args):
         """
@@ -234,7 +234,7 @@ class Fixture(object):
     given test.
     """
 
-    TEMPLATE = 'fixture.c'
+    TEMPLATE = 'fixture.c.tmpl'
 
     def __init__(self, coord_range, name, return_type, code, teardown=None):
         """
@@ -770,7 +770,7 @@ class HypoFile(object):
     character.
     """
 
-    TEMPLATE = 'master.c'
+    TEMPLATE = 'master.c.tmpl'
 
     @classmethod
     def parse(cls, path):

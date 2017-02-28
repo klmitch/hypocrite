@@ -1,0 +1,61 @@
+// -*- c -*-
+
+%target "to_test.c"
+
+%preamble {
+#include <stdlib.h>
+
+struct test_struct {
+  unsigned int ts_value;
+};
+%}
+
+%mock void *malloc(size_t size)
+%mock void free(void *ptr)
+
+%fixture test_struct *allocate {
+  return (test_struct *)malloc(sizeof(struct test_struct));
+%} teardown {
+  free(allocate);
+%}
+
+%test allocate {
+  hypo_mock_expectcalls_malloc expected[] = {
+    {0, sizeof(test_struct)}
+  };
+  struct test_struct test_data;
+  struct test_struct *result;
+
+  hypo_mock_addreturn_malloc(&test_data);
+
+  result = alloc();
+
+  hypo_assert(result == &test_data);
+  hypo_mock_checkcalls_malloc(expected, 1);
+%}
+
+%test allocate_failure {
+  hypo_mock_expectcalls_malloc expected[] = {
+    {0, sizeof(test_struct)}
+  };
+  struct test_struct *result;
+
+  hypo_mock_addreturn_malloc(0);
+
+  result = alloc();
+
+  hypo_assert(result == 0);
+  hypo_mock_checkcalls_malloc(expected, 1);
+%}
+
+%test deallocate(allocate) {
+  hypo_mock_expectcalls_free expected[] = {
+    {0, allocate}
+  };
+
+  hypo_mock_nospy_free();
+
+  dealloc(allocate);
+
+  hypo_mock_checkcalls_free(expected, 1);
+%}

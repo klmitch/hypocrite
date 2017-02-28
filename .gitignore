@@ -1,0 +1,10 @@
+/.cache
+/.coverage
+/.tox
+/build
+/cov_html
+/dist
+*.egg-info
+*.log
+*.pyc
+*.whl

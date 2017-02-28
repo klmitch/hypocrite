@@ -1,0 +1,4 @@
+cli_tools
+jinja2
+setuptools
+six
